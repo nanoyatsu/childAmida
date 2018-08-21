@@ -46,16 +46,28 @@ public class GameManager : MonoBehaviour {
 	}
 	// 縦線増加関数 columnCnt = 2～5を循環
 	public void amidaColumnAdd() {
+		if(moving) { return; }
 		if(columnCnt == 5) {
 			columnCnt = 1;
 		}
 		columnCnt++;
-		newAmida();
+		reDraw();
 	}
 
+	// 再描画関数(クリア時、本数変更時)
+	public void reDraw() {
+		clonesDestroy();
+		newAmida();
+
+	}
+	private void clonesDestroy() {
+		// 前のline、pointer、goalを消す
+		clonesDestroyWithTag(CONST.amidaLineTagName);
+		clonesDestroyWithTag(CONST.selectorGoalTagName);
+		clonesDestroyWithTag(CONST.selectedGoalTagName);
+		clonesDestroyWithTag(CONST.resultTagName);
+	}
 	private void newAmida() {
-		// HACK:再描画・初期化まわり混ざり気味
-		moving = false;
 		amida = new Amida(CONST.rowCnt, columnCnt);
 		var a = amida.rowMap;
 		for(int n = 0; n < columnCnt - 1; n++) {
@@ -73,13 +85,6 @@ public class GameManager : MonoBehaviour {
 		pointerRow = -1;
 		pointerColumn =(Random.Range(0, columnCnt));
 		pointer.transform.position = rowMapIndexToPosition(columnCnt, -1, pointerColumn);
-
-		// 前のAmidaのlineを消す
-		// HACK:Drawっぽい処理じゃない 別に抜くべき
-		ClonesDestroyWithTag(CONST.amidaLineTagName);
-		ClonesDestroyWithTag(CONST.selectorGoalTagName);
-		ClonesDestroyWithTag(CONST.selectedGoalTagName);
-		ClonesDestroyWithTag(CONST.resultTagName);
 
 		// 横線の配置
 		for(int m = 0; m < CONST.rowCnt; m++) {
@@ -118,7 +123,6 @@ public class GameManager : MonoBehaviour {
 				pointer.transform.position = nextArrivalPos;
 
 				var isMoveEnd = pointerRow >= CONST.rowCnt;
-				//TODO:Rowの比較らへんで代替？
 				if(isMoveEnd) {
 					moving = false;
 					resultShow();
@@ -133,7 +137,7 @@ public class GameManager : MonoBehaviour {
 
 	// 次の目的座標を探す
 	public Vector3 searchNextArrivalPos(bool[, ] rowMap, ref int pointerRow, ref int pointerColumn) {
-		// REVIEW:この説明変数要るかな
+		// REVIEW:この説明変数要るかな(結局簡潔でない)
 		var rightRowIndex = pointerColumn;
 		var leftRowIndex = rightRowIndex - 1;
 
@@ -190,7 +194,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	// static
-	public static void ClonesDestroyWithTag(string tagname) {
+	public static void clonesDestroyWithTag(string tagname) {
 		var clones = GameObject.FindGameObjectsWithTag(tagname);
 		foreach(var clone in clones) {
 			Destroy(clone);
@@ -225,6 +229,7 @@ public class Amida {
 		// 横線の配置図を作成
 		for(int m = 0; m < rowCnt; m++) {
 			for(int n = 0; n < columnCnt - 1; n++) {
+				// TODO: 配置に結構偏りが出る(左端は少なくなりがち、とか) しかしアルゴリズムとして収められるかわからない
 				// 乱数0以外なら横線あり
 				rowMap[m, n] = Random.Range(0, 2) != 0;
 

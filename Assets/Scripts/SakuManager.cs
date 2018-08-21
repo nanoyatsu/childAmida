@@ -36,7 +36,7 @@ public class SakuManager : MonoBehaviour {
 			GameManager gm = GameObject.Find(CONST.gmObjectName).GetComponent<GameManager>();
 			gm.moveStart(this.transform.position);
 
-			GameManager.ClonesDestroyWithTag(CONST.selectorGoalTagName);
+			GameManager.clonesDestroyWithTag(CONST.selectorGoalTagName);
 		}
 	}
 }
