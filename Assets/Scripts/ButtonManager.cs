@@ -11,8 +11,17 @@ public class ButtonManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update() { }
 
-	public void buttonOnClick() {
+	public void addLineBtnOnClick() {
 		GameObject gm = GameObject.Find(CONST.gmObjectName);
 		gm.GetComponent<GameManager>().amidaColumnAdd();
+	}
+	public void reDrawBtnOnClick() {
+		GameObject gm = GameObject.Find(CONST.gmObjectName);
+		gm.GetComponent<GameManager>().reDraw();
+		this.gameObject.SetActive(false);
+	}
+
+	public void switchEnabled() {
+		this.enabled = this.enabled?false : true;
 	}
 }

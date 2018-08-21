@@ -13,6 +13,7 @@ public static class CONST {
 	public const float minYpos = -4f;
 
 	public const string gmObjectName = "GameManager";
+	public const string reDrawBtnObjectName = "reDrawBtn";
 	public const string pointerObjectName = "ひつじ";
 	public const string goalObjectName = "saku";
 	public const string selectedGoalTagName = "saku";
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour {
 	// 処理用
 	private Amida amida;
 	private GameObject pointer;
+	private GameObject reDrawBtn;
 	private Vector3 nextArrivalPos;
 	private Vector3 goalPos;
 	private int columnCnt = 2;
@@ -42,6 +44,8 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		pointer = GameObject.Find(CONST.pointerObjectName);
+		reDrawBtn = GameObject.Find(CONST.reDrawBtnObjectName);
+		reDrawBtn.SetActive(false);
 		newAmida();
 	}
 	// 縦線増加関数 columnCnt = 2～5を循環
@@ -180,6 +184,7 @@ public class GameManager : MonoBehaviour {
 		//Debug.Log("resultshow()");
 		var result =(GameObject) Instantiate(resultPrefab);
 		result.tag = CONST.resultTagName;
+		reDrawBtn.SetActive(true);
 
 		// 正解のsprite、間違いのspriteを設定
 		result.GetComponent<SpriteRenderer>().sprite =
